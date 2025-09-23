@@ -88,6 +88,8 @@ model Plan {
   currency                String       @default("usd")
   seatCapacityPerPurchase Int          @default(1)
   isActive                Boolean      @default(true)
+  stripeProductId         String?      @unique
+  stripePriceId           String?      @unique
   createdAt               DateTime     @default(now())
   updatedAt               DateTime     @updatedAt
 
@@ -98,6 +100,7 @@ model Plan {
   @@unique([providerId, name], map: "uniq_plan_provider_name")
   @@index([isActive], map: "idx_plan_active")
   @@index([providerId], map: "idx_plan_provider")
+  @@index([stripePriceId], map: "idx_plan_stripe_price")
 }
 
 model Subscription {

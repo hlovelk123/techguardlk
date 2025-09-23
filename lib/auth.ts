@@ -6,6 +6,7 @@ import { getServerSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
+import { env } from "@/lib/env";
 import { prisma } from "@/lib/prisma";
 
 const credentialsProvider = Credentials({
@@ -41,11 +42,11 @@ const credentialsProvider = Credentials({
 
 const providers: NextAuthOptions["providers"] = [
   credentialsProvider,
-  ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+  ...(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
     ? [
         GoogleProvider({
-          clientId: process.env.GOOGLE_CLIENT_ID,
-          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          clientId: env.GOOGLE_CLIENT_ID,
+          clientSecret: env.GOOGLE_CLIENT_SECRET,
         }),
       ]
     : []),
@@ -66,7 +67,7 @@ export const authOptions: NextAuthOptions = {
   jwt: {
     maxAge: 30 * 24 * 60 * 60,
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, user }) {
     if (user) {
@@ -114,7 +115,7 @@ export const authOptions: NextAuthOptions = {
       }
     },
   },
-  debug: process.env.NODE_ENV === "development",
+  debug: env.NODE_ENV === "development",
 };
 
 export const getAuthSession = () => getServerSession(authOptions);

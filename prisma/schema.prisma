@@ -1,0 +1,195 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("DATABASE_SHADOW_URL")
+}
+
+enum Role {
+  admin
+  customer
+}
+
+enum PlanInterval {
+  month
+  year
+}
+
+enum SubscriptionStatus {
+  trialing
+  active
+  past_due
+  canceled
+  expired
+}
+
+enum EntitlementStatus {
+  assigned
+  unassigned
+  revoked
+}
+
+enum OrderStatus {
+  pending
+  paid
+  failed
+}
+
+enum ActorType {
+  user
+  system
+}
+
+model User {
+  id               String    @id @default(cuid())
+  name             String?
+  email            String    @unique
+  hashedPassword   String?
+  emailVerified    DateTime?
+  role             Role      @default(customer)
+  stripeCustomerId String?   @unique
+  twoFactorEnabled Boolean   @default(false)
+  twoFactorSecret  String?
+  deletedAt        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  subscriptions Subscription[]
+  orders        Order[]
+  entitlements  Entitlement[]
+  auditLogs     AuditLog[]     @relation("UserAuditLog")
+
+  @@index([role], map: "idx_user_role")
+  @@index([email, role], map: "idx_user_email_role")
+}
+
+model Provider {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  plans Plan[]
+
+  @@index([isActive], map: "idx_provider_active")
+}
+
+model Plan {
+  id                      String       @id @default(cuid())
+  providerId              String
+  name                    String
+  description             String
+  interval                PlanInterval @default(month)
+  priceCents              Int
+  currency                String       @default("usd")
+  seatCapacityPerPurchase Int          @default(1)
+  isActive                Boolean      @default(true)
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
+
+  provider      Provider       @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  subscriptions Subscription[]
+  orders        Order[]
+
+  @@unique([providerId, name], map: "uniq_plan_provider_name")
+  @@index([isActive], map: "idx_plan_active")
+  @@index([providerId], map: "idx_plan_provider")
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String
+  planId               String
+  status               SubscriptionStatus @default(active)
+  quantity             Int                @default(1)
+  priceId              String?
+  stripeSubscriptionId String?            @unique
+  startDate            DateTime           @default(now())
+  currentPeriodEnd     DateTime
+  cancelAtPeriodEnd    Boolean            @default(false)
+  canceledAt           DateTime?
+  trialEndsAt          DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan         Plan          @relation(fields: [planId], references: [id], onDelete: Restrict)
+  entitlements Entitlement[]
+  orders       Order[]
+
+  @@index([userId, status], map: "idx_subscription_user_status")
+  @@index([planId], map: "idx_subscription_plan")
+  @@index([status, currentPeriodEnd], map: "idx_subscription_status_period")
+}
+
+model Entitlement {
+  id             String            @id @default(cuid())
+  subscriptionId String
+  userId         String?
+  assigneeEmail  String?
+  status         EntitlementStatus @default(unassigned)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([subscriptionId, status], map: "idx_entitlement_subscription_status")
+  @@index([userId], map: "idx_entitlement_user")
+  @@index([assigneeEmail], map: "idx_entitlement_email")
+}
+
+model Order {
+  id                      String      @id @default(cuid())
+  userId                  String
+  planId                  String
+  subscriptionId          String?
+  amountCents             Int
+  currency                String      @default("usd")
+  stripeCheckoutSessionId String      @unique
+  status                  OrderStatus @default(pending)
+  createdAt               DateTime    @default(now())
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan         Plan          @relation(fields: [planId], references: [id], onDelete: Restrict)
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+
+  @@index([userId, status], map: "idx_order_user_status")
+  @@index([planId], map: "idx_order_plan")
+  @@index([subscriptionId], map: "idx_order_subscription")
+  @@index([createdAt], map: "idx_order_created_at")
+}
+
+model WebhookEvent {
+  id          String    @id @default(cuid())
+  source      String
+  externalId  String    @unique
+  eventType   String
+  payload     Json
+  processedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([source, processedAt], map: "idx_webhook_source_processed")
+  @@index([createdAt], map: "idx_webhook_created_at")
+}
+
+model AuditLog {
+  id          String    @id @default(cuid())
+  actorUserId String?
+  actorType   ActorType @default(system)
+  action      String
+  entityType  String
+  entityId    String
+  changes     Json
+  createdAt   DateTime  @default(now())
+
+  actorUser User? @relation("UserAuditLog", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([entityType, entityId], map: "idx_audit_entity")
+  @@index([createdAt], map: "idx_audit_created_at")
+  @@index([actorUserId], map: "idx_audit_actor")
+}

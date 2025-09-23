@@ -25,3 +25,17 @@ export async function requireUser() {
 
   return session;
 }
+
+export async function requireAdmin() {
+  const session = await getAuthSession();
+
+  if (!session) {
+    redirect("/auth/signin?callbackUrl=/admin");
+  }
+
+  if (session.user.role !== "admin") {
+    redirect("/dashboard");
+  }
+
+  return session;
+}

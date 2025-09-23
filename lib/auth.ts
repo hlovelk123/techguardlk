@@ -5,6 +5,7 @@ import type { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import { authenticator } from "otplib";
 
 import { env } from "@/lib/env";
 import { prisma } from "@/lib/prisma";
@@ -14,6 +15,7 @@ const credentialsProvider = Credentials({
   credentials: {
     email: { label: "Email", type: "email" },
     password: { label: "Password", type: "password" },
+    token: { label: "Authentication code", type: "text" },
   },
   authorize: async (credentials) => {
     if (!credentials?.email || !credentials.password) {
@@ -34,6 +36,24 @@ const credentialsProvider = Credentials({
 
     if (!isValidPassword) {
       return null;
+    }
+
+    if (!user.emailVerified) {
+      throw new Error("Email not verified");
+    }
+
+    if (user.twoFactorEnabled) {
+      if (!credentials.token) {
+        throw new Error("Two-factor token required");
+      }
+
+      const validToken = user.twoFactorSecret
+        ? authenticator.verify({ token: credentials.token, secret: user.twoFactorSecret })
+        : false;
+
+      if (!validToken) {
+        throw new Error("Invalid two-factor code");
+      }
     }
 
     return user;

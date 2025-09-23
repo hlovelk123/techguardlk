@@ -1,11 +1,18 @@
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ProfileSettings } from "@/components/profile/profile-settings";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAuthSession } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 export default async function ProfilePage() {
   const session = await getAuthSession();
 
   if (!session) {
+    return null;
+  }
+
+  const user = await prisma.user.findUnique({ where: { id: session.user.id } });
+
+  if (!user) {
     return null;
   }
 
@@ -17,11 +24,11 @@ export default async function ProfilePage() {
           <CardDescription>Manage your account details and security preferences.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Alert>
-            <AlertDescription>
-              Profile editing and two-factor authentication management will be available in a future update.
-            </AlertDescription>
-          </Alert>
+          <ProfileSettings
+            name={user.name}
+            email={user.email}
+            twoFactorEnabled={user.twoFactorEnabled}
+          />
         </CardContent>
       </Card>
     </div>

@@ -3,8 +3,11 @@ import { z } from "zod";
 
 import { writeAuditLog } from "@/lib/audit";
 import { getAuthSession } from "@/lib/auth";
+import { sendEmail } from "@/lib/email";
+import { orderReceiptTemplate } from "@/lib/email-templates";
 import { env } from "@/lib/env";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
 import { ensureStripeConfigured, getStripeClient } from "@/lib/stripe";
 
 const checkoutRequestSchema = z.object({
@@ -26,6 +29,13 @@ export async function POST(request: NextRequest) {
 
   if (!session) {
     return NextResponse.json({ message: "You must be signed in to checkout." }, { status: 401 });
+  }
+
+  const ip = request.ip ?? request.headers.get("x-forwarded-for") ?? session.user.id;
+  const limit = rateLimit(`checkout:${ip}`, 10, 60 * 60 * 1000);
+
+  if (!limit.success) {
+    return NextResponse.json({ message: "Too many checkout attempts" }, { status: 429 });
   }
 
   try {
@@ -140,6 +150,19 @@ export async function POST(request: NextRequest) {
     },
   });
 
+  if (env.EMAIL_FROM) {
+    void sendEmail({
+      to: user.email,
+      subject: `TechGuard order for ${plan.name}`,
+      html: orderReceiptTemplate({
+        planName: plan.name,
+        amount: formatAmount(amountCents, plan.currency),
+      }),
+    }).catch((error) => {
+      console.error("Failed to send order email", error);
+    });
+  }
+
   await writeAuditLog({
     action: "order.pending",
     entityType: "order",
@@ -154,4 +177,11 @@ export async function POST(request: NextRequest) {
   });
 
   return NextResponse.json({ url: stripeSession.url }, { status: 200 });
+}
+
+function formatAmount(cents: number, currency: string) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: currency.toUpperCase(),
+  }).format(cents / 100);
 }

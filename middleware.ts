@@ -1,4 +1,3 @@
-import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { withAuth } from "next-auth/middleware";
 
@@ -8,7 +7,7 @@ function isProtectedPath(pathname: string) {
   return PROTECTED_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 }
 
-const authMiddleware = withAuth(
+export default withAuth(
   (req) => {
     const { pathname, origin } = req.nextUrl;
     const token = req.nextauth.token;
@@ -41,10 +40,6 @@ const authMiddleware = withAuth(
     },
   },
 );
-
-export default function middleware(req: NextRequest) {
-  return authMiddleware(req);
-}
 
 export const config = {
   matcher: [

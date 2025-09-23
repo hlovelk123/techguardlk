@@ -3,6 +3,9 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
+import { SiteFooter } from "@/components/layout/site-footer";
+import { SiteHeader } from "@/components/layout/site-header";
+import { AppProviders } from "@/components/providers/app-providers";
 import { cn } from "@/lib/utils";
 
 const fontSans = Inter({
@@ -22,13 +25,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable,
-        )}
-      >
-        <div className="flex min-h-screen flex-col">{children}</div>
+      <body className={cn("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
+        <AppProviders>
+          <div className="flex min-h-screen flex-col">
+            <SiteHeader />
+            <main className="flex-1">{children}</main>
+            <SiteFooter />
+          </div>
+        </AppProviders>
       </body>
     </html>
   );

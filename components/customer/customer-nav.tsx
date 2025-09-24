@@ -1,5 +1,6 @@
 "use client";
 
+import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -10,7 +11,9 @@ const NAV_ITEMS = [
   { href: "/dashboard", label: "Overview" },
   { href: "/orders", label: "Orders" },
   { href: "/profile", label: "Profile" },
-];
+] as const satisfies ReadonlyArray<{ href: Route; label: string }>;
+
+const PLANS_ROUTE: Route = "/plans";
 
 interface CustomerNavProps {
   email?: string | null;
@@ -43,7 +46,7 @@ export function CustomerNav({ email }: CustomerNavProps) {
           );
         })}
         <Button variant="ghost" className="justify-start text-muted-foreground" asChild>
-          <Link href="/plans">Browse plans</Link>
+          <Link href={PLANS_ROUTE}>Browse plans</Link>
         </Button>
       </nav>
     </div>

@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { formatCurrency, formatSeatCapacity } from "@/lib/formatters";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Plans | TechGuard",
   description: "Browse plans from curated digital providers and manage your seats with TechGuard.",

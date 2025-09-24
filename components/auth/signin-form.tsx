@@ -1,7 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter,useSearchParams } from "next/navigation";
+import type { Route } from "next";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -25,6 +26,7 @@ export function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? "/dashboard";
+  const safeCallback: Route = callbackUrl.startsWith("/") ? (callbackUrl as Route) : "/dashboard";
   const [error, setError] = useState<string | null>(null);
 
   const form = useForm<FormValues>({
@@ -56,7 +58,7 @@ export function SignInForm() {
       return;
     }
 
-    router.push(callbackUrl);
+    router.push(safeCallback);
   };
 
   return (

@@ -1,5 +1,6 @@
 "use client";
 
+import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -14,7 +15,7 @@ const NAV_ITEMS = [
   { href: "/admin/plans", label: "Plans" },
   { href: "/admin/orders", label: "Orders" },
   { href: "/admin/audit", label: "Audit" },
-];
+] as const satisfies ReadonlyArray<{ href: Route; label: string }>;
 
 interface AdminNavProps {
   userEmail?: string | null;

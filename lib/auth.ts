@@ -7,7 +7,7 @@ import Credentials from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { authenticator } from "otplib";
 
-import { env } from "@/lib/env";
+import { env, getRequiredEnv } from "@/lib/env";
 import { prisma } from "@/lib/prisma";
 
 const credentialsProvider = Credentials({
@@ -87,7 +87,7 @@ export const authOptions: NextAuthOptions = {
   jwt: {
     maxAge: 30 * 24 * 60 * 60,
   },
-  secret: env.NEXTAUTH_SECRET,
+  secret: getRequiredEnv("NEXTAUTH_SECRET"),
   callbacks: {
     async jwt({ token, user }) {
     if (user) {

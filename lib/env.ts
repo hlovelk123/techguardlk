@@ -14,8 +14,10 @@ const envSchema = z.object({
   EMAIL_FROM: z.string().optional(),
 });
 
-export const env = envSchema.parse({
-  NODE_ENV: process.env.NODE_ENV,
+type Env = z.infer<typeof envSchema>;
+
+const rawEnv: Partial<Env> = {
+  NODE_ENV: process.env.NODE_ENV as Env["NODE_ENV"],
   DATABASE_URL: process.env.DATABASE_URL,
   DATABASE_SHADOW_URL: process.env.DATABASE_SHADOW_URL,
   NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
@@ -26,11 +28,55 @@ export const env = envSchema.parse({
   NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   RESEND_API_KEY: process.env.RESEND_API_KEY,
   EMAIL_FROM: process.env.EMAIL_FROM,
-});
+};
 
-export function getRequiredEnv(name: keyof typeof env) {
-  const value = env[name];
-  if (!value) {
+const skipValidation =
+  process.env.SKIP_ENV_VALIDATION === "true" || process.env.SKIP_ENV_VALIDATION === "1";
+
+const parsedEnv = envSchema.safeParse(rawEnv);
+const issueSummary = parsedEnv.success
+  ? null
+  : Object.entries(parsedEnv.error.flatten().fieldErrors)
+      .map(([key, messages]) => `${key}: ${messages?.join(", ")}`)
+      .join("; ");
+
+if (!parsedEnv.success && !skipValidation) {
+  throw new Error(`Invalid environment configuration: ${issueSummary}`);
+}
+
+const globalEnvState = globalThis as { __envValidationWarned?: boolean };
+
+if (!parsedEnv.success && skipValidation && !globalEnvState.__envValidationWarned) {
+  console.warn(
+    `Skipping environment validation because SKIP_ENV_VALIDATION is set${issueSummary ? ` (${issueSummary})` : ""}.`,
+  );
+  globalEnvState.__envValidationWarned = true;
+}
+
+const fallbackEnv: Env = parsedEnv.success
+  ? parsedEnv.data
+  : ({
+      NODE_ENV: rawEnv.NODE_ENV ?? "development",
+      DATABASE_URL: rawEnv.DATABASE_URL ?? "",
+      DATABASE_SHADOW_URL: rawEnv.DATABASE_SHADOW_URL,
+      NEXTAUTH_SECRET: rawEnv.NEXTAUTH_SECRET ?? "",
+      GOOGLE_CLIENT_ID: rawEnv.GOOGLE_CLIENT_ID,
+      GOOGLE_CLIENT_SECRET: rawEnv.GOOGLE_CLIENT_SECRET,
+      STRIPE_SECRET_KEY: rawEnv.STRIPE_SECRET_KEY,
+      STRIPE_WEBHOOK_SECRET: rawEnv.STRIPE_WEBHOOK_SECRET,
+      NEXT_PUBLIC_APP_URL: rawEnv.NEXT_PUBLIC_APP_URL,
+      RESEND_API_KEY: rawEnv.RESEND_API_KEY,
+      EMAIL_FROM: rawEnv.EMAIL_FROM,
+    } as Env);
+
+export const env: Env = fallbackEnv;
+
+export function getRequiredEnv(name: keyof Env): string {
+  const value = process.env[name as string] ?? env[name];
+  if (!value || value.length === 0) {
+    if (skipValidation) {
+      return "__SKIP_ENV_VALIDATION__";
+    }
     throw new Error(`Missing required environment variable: ${String(name)}`);
   }
   return value;

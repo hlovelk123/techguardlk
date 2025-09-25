@@ -30,6 +30,7 @@ Then visit `http://localhost:3000`.
 | `NEXT_PUBLIC_APP_URL` | External URL used in transactional emails |
 | `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` | Stripe API + webhook signing keys |
 | `RESEND_API_KEY` / `EMAIL_FROM` | Email delivery configuration |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | Optional SMTP fallback (e.g., Mailpit) |
 | `SKIP_ENV_VALIDATION` | Optional flag to bypass strict env parsing (useful for tooling/tests) |
 
 ## Architecture Overview
@@ -130,7 +131,7 @@ Populate `STRIPE_WEBHOOK_SECRET` with the signing secret from `stripe listen` an
 ### Email Delivery
 
 - Resend (production): configure `RESEND_API_KEY` and `EMAIL_FROM`.
-- Nodemailer fallback: run Mailpit (or any SMTP server) on `localhost:1025` during development.
+- Nodemailer fallback: run Mailpit (or any SMTP server) on `localhost:1025` during development and set `SMTP_HOST`, `SMTP_PORT`, and (if required) `SMTP_USER` / `SMTP_PASS`. Leave `SMTP_SECURE=false` for Mailpit.
 
 ## Key Directories
 

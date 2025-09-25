@@ -12,6 +12,11 @@ const envSchema = z.object({
   NEXT_PUBLIC_APP_URL: z.string().optional(),
   RESEND_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().optional(),
+  SMTP_HOST: z.string().optional(),
+  SMTP_PORT: z.string().optional(),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASS: z.string().optional(),
+  SMTP_SECURE: z.enum(["true", "false"]).optional(),
 });
 
 type Env = z.infer<typeof envSchema>;
@@ -28,6 +33,11 @@ const rawEnv: Partial<Env> = {
   NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   RESEND_API_KEY: process.env.RESEND_API_KEY,
   EMAIL_FROM: process.env.EMAIL_FROM,
+  SMTP_HOST: process.env.SMTP_HOST,
+  SMTP_PORT: process.env.SMTP_PORT,
+  SMTP_USER: process.env.SMTP_USER,
+  SMTP_PASS: process.env.SMTP_PASS,
+  SMTP_SECURE: process.env.SMTP_SECURE,
 };
 
 const skipValidation =
@@ -67,6 +77,11 @@ const fallbackEnv: Env = parsedEnv.success
       NEXT_PUBLIC_APP_URL: rawEnv.NEXT_PUBLIC_APP_URL,
       RESEND_API_KEY: rawEnv.RESEND_API_KEY,
       EMAIL_FROM: rawEnv.EMAIL_FROM,
+      SMTP_HOST: rawEnv.SMTP_HOST,
+      SMTP_PORT: rawEnv.SMTP_PORT,
+      SMTP_USER: rawEnv.SMTP_USER,
+      SMTP_PASS: rawEnv.SMTP_PASS,
+      SMTP_SECURE: rawEnv.SMTP_SECURE,
     } as Env);
 
 export const env: Env = fallbackEnv;

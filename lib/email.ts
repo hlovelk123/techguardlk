@@ -5,13 +5,30 @@ import { env } from "@/lib/env";
 
 const resendClient = env.RESEND_API_KEY ? new Resend(env.RESEND_API_KEY) : null;
 
-const transporter = env.EMAIL_FROM
+const smtpHost = env.SMTP_HOST ?? (env.NODE_ENV === "development" ? "localhost" : undefined);
+const smtpPort = env.SMTP_PORT ? Number.parseInt(env.SMTP_PORT, 10) : env.NODE_ENV === "development" ? 1025 : undefined;
+const smtpSecure = env.SMTP_SECURE ? env.SMTP_SECURE === "true" : false;
+
+const transporter = env.EMAIL_FROM && smtpHost && smtpPort
   ? nodemailer.createTransport({
-      host: env.NODE_ENV === "development" ? "localhost" : "smtp.resend.com",
-      port: env.NODE_ENV === "development" ? 1025 : 587,
-      secure: false,
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpSecure,
+      auth:
+        env.SMTP_USER && env.SMTP_PASS
+          ? {
+              user: env.SMTP_USER,
+              pass: env.SMTP_PASS,
+            }
+          : undefined,
     })
-  : null;
+  : env.EMAIL_FROM && env.NODE_ENV !== "development"
+    ? nodemailer.createTransport({
+        host: "smtp.resend.com",
+        port: 587,
+        secure: false,
+      })
+    : null;
 
 interface SendEmailOptions {
   to: string;

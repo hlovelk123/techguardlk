@@ -16,3 +16,7 @@ export function rateLimit(key: string, limit: number, windowMs: number) {
   existing.count += 1;
   return { success: true };
 }
+
+export function resetRateLimitStore() {
+  windows.clear();
+}

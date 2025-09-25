@@ -32,7 +32,7 @@ export default function Home() {
           </Button>
         </div>
         <div className="mt-12 flex flex-wrap items-center justify-center gap-3 text-sm text-muted-foreground">
-          <span className="font-medium uppercase tracking-[0.25em] text-muted-foreground/80">
+          <span className="font-medium uppercase tracking-[0.25em] text-foreground">
             Trusted providers
           </span>
           {providers.map((provider) => (

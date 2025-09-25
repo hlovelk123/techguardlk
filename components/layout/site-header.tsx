@@ -7,7 +7,7 @@ export function SiteHeader() {
     <header className="border-b bg-background/80 backdrop-blur-sm">
       <div className="container flex h-16 items-center justify-between gap-6">
         <Link href="/" className="flex items-center gap-2 text-lg font-semibold">
-          <span className="rounded bg-primary/10 px-2 py-1 text-primary">TechGuard</span>
+          <span className="rounded bg-primary px-2 py-1 text-primary-foreground">TechGuard</span>
           <span className="hidden font-medium text-muted-foreground sm:inline">Digital Seats</span>
         </Link>
         <nav className="flex items-center gap-6 text-sm font-medium text-muted-foreground">

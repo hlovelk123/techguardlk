@@ -38,5 +38,5 @@
    - Logged as future work; current release focuses on backend hardening and testing.
 
 ## Upcoming Actions
-- Commit staged changes and create tag `v0.2.0-rc.2` once review passes.
+- Completed release tagging (`v0.2.0-rc.2`) and published artifacts to remote.
 - Ensure deployment targets configure health probes to `/api/healthz` and `/api/readyz`.

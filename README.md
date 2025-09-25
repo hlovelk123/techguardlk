@@ -27,7 +27,7 @@ Then visit `http://localhost:3000`.
 | --- | --- |
 | `DATABASE_URL` | PostgreSQL connection string |
 | `NEXTAUTH_SECRET` | Random string for NextAuth session encryption |
-| `NEXT_PUBLIC_APP_URL` | External URL used in transactional emails |
+| `NEXT_PUBLIC_APP_URL` | External URL used in transactional emails (set to `http://localhost:3001` when using docker-compose) |
 | `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` | Stripe API + webhook signing keys |
 | `RESEND_API_KEY` / `EMAIL_FROM` | Email delivery configuration |
 | `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | Optional SMTP fallback (e.g., Mailpit) |

@@ -41,7 +41,7 @@ services:
       SMTP_SECURE: "false"
       SMTP_USER: ''
       SMTP_PASS: ''
-      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_APP_URL: http://localhost:3001
       NODE_ENV: production
       PORT: 3000
     ports:

@@ -5,7 +5,7 @@
 - ✅ Health (`/api/healthz`) and readiness (`/api/readyz`) probes implemented; Dockerfile and docker-compose expose healthy non-root runtime.
 - ✅ `.env.example` updated with all required variables plus testing overrides; README, CHANGELOG, MIGRATION, release notes, and REPORT scaffolded.
 - ✅ CI workflow now runs lint → typecheck → coverage → build → Playwright with artifact uploads.
-- ✅ Build artifacts produced via `pnpm build` and zipped to `dist/techguardlk-v0.2.0-rc.1.zip` for release packaging.
+- ✅ Build artifacts produced via containerized `pnpm build` and zipped to `dist/techguardlk-v0.2.0-rc.2.zip` (standalone output) for release packaging.
 
 ## Test Baseline
 - Vitest unit + integration suites cover auth, profile, checkout, rate limiting, audit, utilities.
@@ -38,5 +38,5 @@
    - Logged as future work; current release focuses on backend hardening and testing.
 
 ## Upcoming Actions
-- Commit staged changes and create tag `v0.2.0-rc.1` once review passes.
+- Commit staged changes and create tag `v0.2.0-rc.2` once review passes.
 - Ensure deployment targets configure health probes to `/api/healthz` and `/api/readyz`.

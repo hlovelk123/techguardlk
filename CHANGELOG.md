@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.2.0-rc.2] - 2025-09-25
+### Fixed
+- Ensured production build artifacts include Next.js output by enabling standalone mode and packaging the generated `.next` assets.
+
 ## [0.2.0-rc.1] - 2025-09-25
 ### Added
 - `/api/healthz` and `/api/readyz` endpoints plus Docker health checks for container orchestration.
@@ -22,5 +26,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Prevented rate-limit cache leakage by exposing a reset helper for tests.
 - Ensured signup and password reset endpoints respect rate limiting edge cases during automated testing.
 
-[Unreleased]: https://github.com/techguardlk/compare/v0.2.0-rc.1...HEAD
-[0.2.0-rc.1]: https://github.com/techguardlk/releases/tag/v0.2.0-rc.1
+[Unreleased]: https://github.com/techguardlk/compare/v0.2.0-rc.2...HEAD
+[0.2.0-rc.1]: https://github.com/techguardlk/compare/v0.2.0-rc.1...v0.2.0-rc.2
+[0.2.0-rc.2]: https://github.com/techguardlk/releases/tag/v0.2.0-rc.2

@@ -3,7 +3,7 @@
 ## Executive Summary
 - Delivered `/api/healthz` and `/api/readyz` plus hardened Docker assets so orchestrators gain first-class health probes.
 - Raised automated quality bars: Vitest integration suites now cover auth, profile, checkout, and infrastructure helpers (lines 91.55%, branches 80.15%); Playwright adds marketing/auth smoke tests with axe-core scans.
-- Refreshed developer experience with updated README, coverage-aware CI workflow, release collateral, and a zipped production build artifact ready for distribution.
+- Refreshed developer experience with updated README, coverage-aware CI workflow, release collateral, and a zipped standalone production build artifact ready for distribution.
 
 ## Feature Checklist
 | Change | Status | Reference |
@@ -12,7 +12,7 @@
 | Vitest integration coverage & rate-limit helpers | ✅ | (pending commit) |
 | Playwright marketing/auth flows with axe-core scans | ✅ | (pending commit) |
 | README, CHANGELOG, MIGRATION, release notes updates | ✅ | (pending commit) |
-| Production build zip (`dist/techguardlk-v0.2.0-rc.1.zip`) | ✅ | (pending commit) |
+| Production build zip (`dist/techguardlk-v0.2.0-rc.2.zip`) | ✅ | (pending commit) |
 
 > Final commit SHAs will populate after changes are committed.
 
@@ -35,12 +35,12 @@
 
 ## Deliverables
 - `README.md` (quick start, scripts, architecture diagram, deployment guide)
-- `CHANGELOG.md` (Keep a Changelog – release `0.2.0-rc.1`)
+- `CHANGELOG.md` (Keep a Changelog – release `0.2.0-rc.2`)
 - `MIGRATION.md` (no schema changes)
 - `PLAN.md` (discovery + execution tracker updated)
 - `REPORT.md` (this document)
-- `release/notes.md` (draft for `v0.2.0-rc.1`)
-- `dist/techguardlk-v0.2.0-rc.1.zip` (production build package)
+- `release/notes.md` (draft for `v0.2.0-rc.2`)
+- `dist/techguardlk-v0.2.0-rc.2.zip` (production build package)
 - Test artifacts: `coverage/`, `e2e-report/`
 
 ## Open Risks & Follow-ups
@@ -49,6 +49,6 @@
 - Future sprint should add client-side component tests for complex dashboards.
 
 ## Next Steps
-1. Stage and commit the changes, then tag `v0.2.0-rc.1` once code review completes.
+1. Stage and commit the changes, then tag `v0.2.0-rc.2` once code review completes.
 2. Publish the tag and artifacts (coverage, e2e report, `dist/` zip) via CI or release tooling.
 3. Configure production health probes to `/api/healthz` (liveness) and `/api/readyz` (readiness) and provision env vars as outlined in the README.

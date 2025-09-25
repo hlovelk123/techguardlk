@@ -1,7 +1,8 @@
-# TechGuard v0.2.0-rc.1 Release Notes
+# TechGuard v0.2.0-rc.2 Release Notes
 
 ## Highlights
 - **Operational health**: Added `/api/healthz` and `/api/readyz` endpoints plus Docker health checks to simplify orchestration readiness.
+- **Production build**: Regenerated Next.js artifacts in standalone mode to resolve runtime TypeError seen in RC.1.
 - **Quality gates**: Expanded Vitest coverage across authentication, profile, checkout, and infrastructure helpers with enforced ≥85% coverage thresholds.
 - **UI hardening**: Introduced Playwright smoke + accessibility checks and improved landing page contrast to satisfy WCAG 2.1 AA.
 - **Developer experience**: New scripts (`test:unit`, `test:integration`, `test:coverage`, `e2e`) and refreshed documentation with architecture snapshot, testing matrix, and CI overview.
@@ -27,5 +28,5 @@
 Tag the release with:
 
 ```bash
-git tag v0.2.0-rc.1
+git tag v0.2.0-rc.2
 ```

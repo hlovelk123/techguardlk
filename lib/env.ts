@@ -21,6 +21,10 @@ const envSchema = z.object({
 
 type Env = z.infer<typeof envSchema>;
 
+const rawSmtpSecure = process.env.SMTP_SECURE;
+const normalizedSmtpSecure =
+  rawSmtpSecure === "true" ? "true" : rawSmtpSecure === "false" ? "false" : undefined;
+
 const rawEnv: Partial<Env> = {
   NODE_ENV: process.env.NODE_ENV as Env["NODE_ENV"],
   DATABASE_URL: process.env.DATABASE_URL,
@@ -37,7 +41,7 @@ const rawEnv: Partial<Env> = {
   SMTP_PORT: process.env.SMTP_PORT,
   SMTP_USER: process.env.SMTP_USER,
   SMTP_PASS: process.env.SMTP_PASS,
-  SMTP_SECURE: process.env.SMTP_SECURE,
+  SMTP_SECURE: normalizedSmtpSecure,
 };
 
 const skipValidation =

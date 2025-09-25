@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ## [0.2.0-rc.2] - 2025-09-25
 ### Fixed
 - Ensured production build artifacts include Next.js output by enabling standalone mode and packaging the generated `.next` assets.
+- Switched Docker build to Debian slim, generating Prisma client during build so readiness probes succeed in containers.
 
 ## [0.2.0-rc.1] - 2025-09-25
 ### Added

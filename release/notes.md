@@ -2,7 +2,7 @@
 
 ## Highlights
 - **Operational health**: Added `/api/healthz` and `/api/readyz` endpoints plus Docker health checks to simplify orchestration readiness.
-- **Production build**: Regenerated Next.js artifacts in standalone mode to resolve runtime TypeError seen in RC.1.
+- **Production build**: Regenerated Next.js artifacts in standalone mode to resolve runtime TypeError seen in RC.1 and updated Docker base to Debian slim for Prisma compatibility.
 - **Quality gates**: Expanded Vitest coverage across authentication, profile, checkout, and infrastructure helpers with enforced ≥85% coverage thresholds.
 - **UI hardening**: Introduced Playwright smoke + accessibility checks and improved landing page contrast to satisfy WCAG 2.1 AA.
 - **Developer experience**: New scripts (`test:unit`, `test:integration`, `test:coverage`, `e2e`) and refreshed documentation with architecture snapshot, testing matrix, and CI overview.

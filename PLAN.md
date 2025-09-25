@@ -38,5 +38,5 @@
    - Logged as future work; current release focuses on backend hardening and testing.
 
 ## Upcoming Actions
-- Completed release tagging (`v0.2.0-rc.2`) and published artifacts to remote.
+- Completed release tagging (`v0.2.0-rc.2`), published artifacts, and validated Docker Compose deployment with passing health/ready probes.
 - Ensure deployment targets configure health probes to `/api/healthz` and `/api/readyz`.

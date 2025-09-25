@@ -3,7 +3,7 @@
 ## Executive Summary
 - Delivered `/api/healthz` and `/api/readyz` plus hardened Docker assets so orchestrators gain first-class health probes.
 - Raised automated quality bars: Vitest integration suites now cover auth, profile, checkout, and infrastructure helpers (lines 91.55%, branches 80.15%); Playwright adds marketing/auth smoke tests with axe-core scans.
-- Refreshed developer experience with updated README, coverage-aware CI workflow, release collateral, and a zipped standalone production build artifact ready for distribution.
+- Refreshed developer experience with updated README, coverage-aware CI workflow, release collateral, and a zipped standalone production build artifact ready for distribution, built from a Debian-slim base image with Prisma client generated during Docker build.
 
 ## Feature Checklist
 | Change | Status | Reference |

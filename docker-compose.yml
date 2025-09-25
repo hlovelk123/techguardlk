@@ -1,4 +1,10 @@
 services:
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
   db:
     image: postgres:16-alpine
     restart: unless-stopped
@@ -20,6 +26,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      mailpit:
+        condition: service_started
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/techguard?schema=public
       NEXTAUTH_URL: http://localhost:3001
@@ -28,6 +36,11 @@ services:
       STRIPE_WEBHOOK_SECRET: whsec_placeholder
       RESEND_API_KEY: ''
       EMAIL_FROM: noreply@example.com
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
+      SMTP_SECURE: "false"
+      SMTP_USER: ''
+      SMTP_PASS: ''
       NEXT_PUBLIC_APP_URL: http://localhost:3000
       NODE_ENV: production
       PORT: 3000
